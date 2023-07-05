@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    environment {
+        registryCredential = 'ecr:ap-northeast-1:aws_cred'
+        appRegistry = "023577096755.dkr.ecr.ap-northeast-1.amazonaws.com/segmaker"
+        vprofileRegistry = "https://023577096755.dkr.ecr.ap-northeast-1.amazonaws.com"
+    }
+  stages {
+    stage('Fetch code'){
+      steps {
+        git branch: 'main', url: 'https://github.com/drtinumohan/python_ui.git'
+      }
+    }
+    stage('Build App Image') {
+       steps {
+       
+         script {
+                dockerImage = docker.build( appRegistry + ":$BUILD_NUMBER", "./")
+             }
+
+     }
+    
+    }
+
+    stage('Upload App Image') {
+          steps{
+            script {
+              docker.withRegistry( vprofileRegistry, registryCredential ) {
+                dockerImage.push("$BUILD_NUMBER")
+                dockerImage.push('latest')
+              }
+            }
+          }
+     }
+
+  }
+}
