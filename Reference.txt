@@ -1,1 +1,2 @@
-https://github.com/hkhcoder/vprofile-project
+git hub url : https://github.com/hkhcoder/vprofile-project
+branch : ci-jenkins for jenkins sonar club setup
